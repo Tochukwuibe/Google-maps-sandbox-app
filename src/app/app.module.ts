@@ -11,6 +11,17 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { GoogleMaps } from "@ionic-native/google-maps";
+import { FirestoreProvider } from '../providers/firestore/firestore';
+import { GeoFireProvider } from '../providers/geo-fire/geo-fire';
+import { DbProvider } from '../providers/db/db';
+
+import {AngularFireModule} from 'angularfire2';
+import {AngularFirestoreModule} from 'angularfire2/firestore';
+import {AngularFireDatabaseModule} from 'angularfire2/database';
+import { MapProvider } from '../providers/map/map';
+import { ComponentsModule } from '../components/components.module';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -21,7 +32,18 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    ComponentsModule,
+    AngularFireModule.initializeApp({
+      apiKey: "AIzaSyA798mO_IqbKHGY8xMtBpuuiADvM1dkvr4",
+      authDomain: "firestore-84244.firebaseapp.com",
+      databaseURL: "https://firestore-84244.firebaseio.com",
+      projectId: "firestore-84244",
+      storageBucket: "firestore-84244.appspot.com",
+      messagingSenderId: "455433881626"
+    }),
+    AngularFireDatabaseModule,
+    AngularFirestoreModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -34,7 +56,12 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    GoogleMaps, 
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    FirestoreProvider,
+    GeoFireProvider,
+    DbProvider,
+    MapProvider
   ]
 })
 export class AppModule {}

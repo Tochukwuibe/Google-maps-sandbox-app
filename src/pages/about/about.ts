@@ -7,8 +7,14 @@ import { NavController } from 'ionic-angular';
 })
 export class AboutPage {
 
+  public showMap;
+
   constructor(public navCtrl: NavController) {
 
+  }
+
+  ionViewWillEnter(){
+   this.showMap = true;
   }
 
 }
