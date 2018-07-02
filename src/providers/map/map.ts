@@ -57,14 +57,11 @@ export class MapProvider {
 
 
   public onMarkerEvent(ref: Marker, event: string): Observable<any> {
-    console.log('listening for', event);
-    console.log('the ref ', JSON.stringify(ref))
+   
     const markerEvent$ = new Observable (observer => {
-      alert('listening for events')
 
     const sub = ref.addEventListener(event)
         .subscribe((e) => {
-       
           observer.next(e)
         })
 
