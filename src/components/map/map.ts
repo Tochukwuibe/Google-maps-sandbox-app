@@ -1,5 +1,5 @@
 import { GoogleMap, GoogleMaps, CameraPosition, LatLng, ILatLng, MarkerOptions, GoogleMapsEvent } from '@ionic-native/google-maps';
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MapProvider } from '../../providers/map/map';
 
 import { take, tap, switchMap, map, delay, distinctUntilChanged, debounceTime } from 'rxjs/operators';
@@ -7,12 +7,13 @@ import { of } from 'rxjs/observable/of';
 import { timer } from 'rxjs/observable/timer';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { merge } from 'rxjs/observable/merge';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-map',
   templateUrl: 'map.html'
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() center: { lat: number, lng: number };
   @Input() CenterIcon: string
@@ -22,6 +23,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Output() cameraChange = new EventEmitter<any>()
 
   public map: GoogleMap;
+  private sub: Subscription;
+
 
   constructor(
     private maps: MapProvider
@@ -38,7 +41,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     const center$ = this.addCenterMarker()
     const event$ =  this.monitorCameraMoves();
     
-    merge(center$, event$).subscribe()
+  this.sub = merge(center$, event$)
+    .subscribe()
   }
 
 
@@ -67,6 +71,8 @@ export class MapComponent implements OnInit, AfterViewInit {
       duration: 2000
     }
     this.map.moveCamera(cameraOpts)
+    this.map.setMyLocationButtonEnabled(true)
+    this.map.setMyLocationEnabled(true)
   }
 
   private monitorCameraMoves() {
@@ -87,5 +93,11 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   private comparisonFn() {
     return (x, y) => x.zoom === y.zoom && (x.center.lat === y.center.lat && x.center.lng === y.center.lng);
+  }
+
+
+  ngOnDestroy() {
+    this.sub.unsubscribe()
+    this.map.remove()
   }
 }

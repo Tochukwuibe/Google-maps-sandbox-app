@@ -63,7 +63,7 @@ export class GeoFireProvider {
     this.geoQuery.updateCriteria({ center: coords, radius: radius})
   }
 
-  onQuery(keyEvent: string): Observable<any[]> {
+  onQuery(keyEvent: string) {
     return new Observable(observer => {
       let qry  = null;
 
@@ -104,14 +104,20 @@ export class GeoFireProvider {
         
     })
     .pipe(
-      scan((acc: any, cur: any) => {
-      return [...acc, cur]
-    }, []),
-    catchError((err) => of(this.hits.value)),
-    tap((hits) => this.hits.next(hits))
+    catchError((err) => of([])),
+    tap((hit: any) => this.validateDistinct(hit))
   )
   }
 
+
+  private validateDistinct(hit: any) {
+    const currentHits = this.hits.value;
+    const currentIds = currentHits.map(hit => hit.key);
+    if (currentIds.indexOf(hit.key) < 0) {
+      currentHits.push(hit);
+      this.hits.next(currentHits);
+    }
+  }
 
   setLocation(key: string, coords: Array<number>) {
     return this.geoFire.set(key, coords);

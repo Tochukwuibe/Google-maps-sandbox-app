@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'page-about',
@@ -11,52 +12,48 @@ import { Subject } from 'rxjs/Subject';
 })
 export class AboutPage {
 
-  public showMap;
 
-  private onCoords = new Subject()
 
-  public coords: Observable< {lat: number, lng: number}[]>;
 
+  public coords: Observable<{ lat: number, lng: number }[]>;
+
+  private onCoords = new Subject();
   private initial = true;
-  
+  private sub: Subscription;
+
 
   constructor(
     public navCtrl: NavController,
     private geo: GeoFireProvider,
-    ) {
+  ) {
 
   }
 
-  ionViewWillEnter(){
-   this.showMap = true;
+  ionViewWillEnter() {
 
-   this.coords = this.onCoords.pipe(
-     filter(res => !!res),
-     switchMap((data: {zoom: number, center: {lat: number, lng: number}}) =>  this.geo.initQuery(20, [data.center.lat, data.center.lng]) ),
-     switchMap(() => this.geo.onQuery('key_entered')),
-     tap((data) => console.log(`the query result ${JSON.stringify(data)}`) )
-  )
-   
+    this.coords = this.geo.hits.asObservable();
+
+    this.sub = this.onCoords.pipe(
+      filter(res => !!res),
+      switchMap((data: { zoom: number, center: { lat: number, lng: number } }) => this.geo.initQuery(100, [data.center.lat, data.center.lng])),
+      switchMap(() => this.geo.onQuery('key_entered')),
+      tap((data) => console.log(`the query result ${JSON.stringify(data)}`))
+    ).subscribe()
+
   }
 
 
 
-  ionViewDidEnter(){
-   
+  onCameraChange(event: { zoom: number, center: { lat: number, lng: number } }) {
+
+    this.onCoords.next(event);
+    this.initial = false;
+
   }
 
-  onCameraChange(event: {zoom: number, center: {lat: number, lng: number}}) {
-   
-      // const newEvent = {
-      //   ...event,
-      //   zoom: Math.ceil(200 / event.zoom)
-      // }
 
-      this.onCoords.next(event);
-      this.initial = false;
 
- 
-    
+  ionViewWillLeave(){
+    this.sub.unsubscribe()
   }
-
 }
