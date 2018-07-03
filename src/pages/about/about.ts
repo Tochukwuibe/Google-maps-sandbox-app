@@ -45,7 +45,7 @@ export class AboutPage {
 
 
   onCameraChange(event: { zoom: number, center: { lat: number, lng: number } }) {
-
+    
     this.onCoords.next(event);
     this.initial = false;
 

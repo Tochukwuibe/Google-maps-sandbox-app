@@ -51,8 +51,8 @@ export class GeoFireProvider {
 
       return () => {
         console.log('canceling the init query ')
-        // this.geoQuery.cancel();
-        // this.geoQuery = null;
+        this.geoQuery.cancel();
+        this.geoQuery = null;
         observer.complete();
       }
     })
