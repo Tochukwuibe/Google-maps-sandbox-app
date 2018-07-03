@@ -15,15 +15,15 @@ export class ContactPage {
   }
   private seedDatabase() {
     let dummyPoints = [
-      [37.9, -122.1],
-      [38.7, -122.2],
-      [38.1, -122.3],
-      [38.3, -122.0],
-      [38.7, -122.1]
+      [39.169906308047295, -85.95544245433807],
+      [39.163906308047295, -85.95344245433807],
+      [39.179906308047295, -85.95344245433807],
+      [39.269906308047295, -85.9344245433807],
+      [39.19906308047295, -85.95344245433807],
     ]
   
     dummyPoints.forEach((val, idx) => {
-      let name = `dummy-location-${idx}`
+      let name = `dummy-locations-${idx}`
       console.log(idx)
       this.geo.setLocation(name, val)
     })

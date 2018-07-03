@@ -27,8 +27,7 @@ export class MapProvider {
 
       return map
     } catch (e) {
-      alert(`the err ${JSON.stringify(e)}`)
-
+     
       return null;
     }
 
@@ -73,6 +72,28 @@ export class MapProvider {
     })
 
     return markerEvent$;
+  }
+
+  public onMapEvent(event: string) {
+
+
+   const event$ = new Observable(observer => {
+      const sub = this.mapRef.addEventListener(event)
+      .subscribe((e) => {
+        observer.next(e)
+      })
+
+      return () => {
+        observer.complete()
+        sub.unsubscribe()
+        return this.mapRef.off(event);
+      }
+   })
+
+   return this.ready.pipe(
+     filter(res => !!res),
+     switchMap(() => event$)
+   )
   }
 
 }

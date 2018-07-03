@@ -1,10 +1,13 @@
-import { GoogleMapsEvent } from '@ionic-native/google-maps';
+import { GoogleMapsEvent, Marker, MarkerOptions } from '@ionic-native/google-maps';
 import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MapProvider } from '../../providers/map/map';
 import { switchMap, tap, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
-
+  interface LocationHit {
+    location: any [],
+    distance: number
+  }
 
 @Component({
   selector: 'app-marker',
@@ -12,7 +15,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class MapMarkerComponent implements OnInit, OnDestroy {
 
-  @Input() position: {lat: number, lng: number};
+  @Input() position: LocationHit;
   @Input() animation: string;
   @Input() icon: string;
   @Input() title: string;
@@ -23,6 +26,7 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
 
 
   private sub: Subscription;
+  private markerRef: Marker;
 
   constructor(
     private maps: MapProvider
@@ -32,26 +36,25 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-   this.sub = this.maps.addMarker(this.position || {lat: 37, lng: -85})
-    .pipe(
-      switchMap((ref) => this.listenForEvent(ref))
-    ).subscribe();
+
+    const lat = this.position.location[0];
+    const lng = this.position.location[1];
+
+   this.sub = this.maps.addMarker({lat: lat, lng: lng} || {lat: 37, lng: -85})
+    .pipe(switchMap((ref) => this.listenForClick(ref))).subscribe();
   }
 
 
-  private listenForEvent(ref) {
+  private listenForClick(ref) {
+    this.markerRef = ref;
     return this.maps.onMarkerEvent(ref, GoogleMapsEvent.MARKER_CLICK)
-    .pipe(
-      tap((e => this.data.next(e))),
-      tap((e) => alert(`the event  ${JSON.stringify(e)}`) ),
-      take(1)
-    );
+    .pipe(tap((e => this.data.next(e))));
   }
 
   
 
   ngOnDestroy() {
-    console.log('ng on destroy')
+    this.markerRef.remove()
     this.sub.unsubscribe()
   }
 
