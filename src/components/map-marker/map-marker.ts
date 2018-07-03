@@ -1,8 +1,9 @@
 import { GoogleMapsEvent, Marker, MarkerOptions } from '@ionic-native/google-maps';
 import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MapProvider } from '../../providers/map/map';
-import { switchMap, tap, take } from 'rxjs/operators';
+import { switchMap, tap, take, delay } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
+
 
   interface LocationHit {
     location: any [],
@@ -40,21 +41,28 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
     const lat = this.position.location[0];
     const lng = this.position.location[1];
 
-   this.sub = this.maps.addMarker({lat: lat, lng: lng} || {lat: 37, lng: -85})
-    .pipe(switchMap((ref) => this.listenForClick(ref))).subscribe();
+   this.sub = this.maps.addMarker({lat: lat, lng: lng})
+    .pipe(
+      tap((marker) => this.markerRef = marker),
+      delay(300),
+      switchMap(() => this.listenForClick())
+    ).subscribe();
   }
 
 
-  private listenForClick(ref) {
-    this.markerRef = ref;
-    return this.maps.onMarkerEvent(ref, GoogleMapsEvent.MARKER_CLICK)
+  private listenForClick() {
+    return this.maps.onMarkerEvent(this.markerRef, GoogleMapsEvent.MARKER_CLICK)
     .pipe(tap((e => this.data.next(e))));
   }
 
   
 
   ngOnDestroy() {
-    this.markerRef.remove()
+    if(this.markerRef) {
+      console.log('removing the marker')
+      this.markerRef.remove()
+    }
+    
     this.sub.unsubscribe()
   }
 

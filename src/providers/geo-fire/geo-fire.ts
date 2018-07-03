@@ -59,6 +59,7 @@ export class GeoFireProvider {
   }
 
   public updateCriteria(radius: number, coords: Array<number>) {
+    console.log('updating with ', radius, JSON.stringify(coords))
     this.geoQuery.updateCriteria({ center: coords, radius: radius})
   }
 

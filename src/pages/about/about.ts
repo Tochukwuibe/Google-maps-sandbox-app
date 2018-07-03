@@ -46,15 +46,16 @@ export class AboutPage {
   }
 
   onCameraChange(event: {zoom: number, center: {lat: number, lng: number}}) {
-    if(this.initial) {
+   
+      // const newEvent = {
+      //   ...event,
+      //   zoom: Math.ceil(200 / event.zoom)
+      // }
 
       this.onCoords.next(event);
       this.initial = false;
 
-    } else {
-      console.log('updating the query')
-      this.geo.updateCriteria(event.zoom, [event.center.lat, event.center.lng])
-    }
+ 
     
   }
 
