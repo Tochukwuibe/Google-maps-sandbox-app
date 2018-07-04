@@ -176,7 +176,7 @@ export class GeoFireProvider {
   getDistance(point1: Array<number>, point2: Array<number>) {
     return new Observable(observer => {
       try {
-        const distance = this.geoFire.distance(point1, point2);
+        const distance = GeoFire.distance(point1, point2);
         observer.next(distance);
         observer.complete();
 
@@ -188,6 +188,10 @@ export class GeoFireProvider {
         observer.complete();
       }
     })
+  }
+
+  getDistanceSync(point1: Array<number>, point2: Array<number>) {
+    return GeoFire.distance(point1, point2)
   }
 
   

@@ -1,8 +1,9 @@
+import { GeoFireProvider } from './../../providers/geo-fire/geo-fire';
 import { GoogleMap, GoogleMaps, CameraPosition, LatLng, ILatLng, MarkerOptions, GoogleMapsEvent } from '@ionic-native/google-maps';
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MapProvider } from '../../providers/map/map';
 
-import { take, tap, switchMap, map, delay, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { take, tap, switchMap, map, delay, distinctUntilChanged, debounceTime, throttleTime, bufferCount } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import { timer } from 'rxjs/observable/timer';
 import { fromPromise } from 'rxjs/observable/fromPromise';
@@ -27,7 +28,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private mapWidth: number;
 
   constructor(
-    private maps: MapProvider
+    private maps: MapProvider,
+    private geo: GeoFireProvider
   ) {
 
   }
@@ -85,17 +87,28 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         map((data) => {
           return { zoom: this.getRadius(data.zoom), center: data.target }
         }),
-        distinctUntilChanged(this.comparisonFn()),
-        debounceTime(500),
+        distinctUntilChanged((x, y) => this.changeFn(x, y)),
+        throttleTime(500),
         tap(data => console.log(`the camera move data ${JSON.stringify(data)}`)),
         tap((data) => this.cameraChange.emit(data))
       )
   }
 
 
-  private comparisonFn() {
-    return (x, y) => x.zoom === y.zoom && (x.center.lat === y.center.lat && x.center.lng === y.center.lng);
+  private changeFn(x: { zoom: number; center: any; }, y: { zoom: number; center: any; }) {
+    const point1 = [x.center.lat, x.center.lng];
+    const point2 = [y.center.lat, y.center.lng];
+    const distance = this.geo.getDistanceSync(point1, point2);
+    console.log('the change in distance', distance);
+    return (distance < Math.floor(x.zoom / 2)) && (x.zoom === y.zoom);
   }
+
+  // private comparisonFn() {
+  //   return (x, y) =>{
+      
+  //     return x.zoom === y.zoom && (x.center.lat === y.center.lat && x.center.lng === y.center.lng) 
+  //   };
+  // }
 
 
 
