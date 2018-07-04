@@ -35,6 +35,7 @@ export class GeoFireProvider {
 
 
   public initQuery(radius: number, coords: Array<number>): Observable<boolean> {
+    console.log('initializing the query with ', radius, JSON.stringify(coords))
     return new Observable(observer => {
       try {
         this.geoQuery = this.geoFire.query({center: coords, radius: radius})

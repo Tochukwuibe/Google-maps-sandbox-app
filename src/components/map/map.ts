@@ -24,7 +24,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public map: GoogleMap;
   private sub: Subscription;
-
+  private mapWidth: number;
 
   constructor(
     private maps: MapProvider
@@ -39,10 +39,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     const center$ = this.addCenterMarker()
-    const event$ =  this.monitorCameraMoves();
-    
-  this.sub = merge(center$, event$)
-    .subscribe()
+    const event$ = this.monitorCameraMoves();
+
+    this.sub = merge(center$, event$)
+      .subscribe()
   }
 
 
@@ -73,6 +73,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.map.moveCamera(cameraOpts)
     this.map.setMyLocationButtonEnabled(true)
     this.map.setMyLocationEnabled(true)
+    this.mapWidth = this.canvas.nativeElement.scrollWidth;
+
   }
 
   private monitorCameraMoves() {
@@ -81,12 +83,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(
         map((data) => data[0]),
         map((data) => {
-          return {zoom: data.zoom, center: data.target}
+          return { zoom: this.getRadius(data.zoom), center: data.target }
         }),
         distinctUntilChanged(this.comparisonFn()),
         debounceTime(500),
         tap(data => console.log(`the camera move data ${JSON.stringify(data)}`)),
-        tap((data) => this.cameraChange.emit(data) )
+        tap((data) => this.cameraChange.emit(data))
       )
   }
 
@@ -96,7 +98,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+
+  private getRadius(zoom: number) {
+  
+    const zooms = [21282, 16355, 10064, 5540, 2909, 1485, 752, 378, 190, 95, 48, 24, 12, 6, 3, 1.48, 0.74, 0.37, 0.19];
+    let zoomIndex = Math.ceil(zoom) - 1;
+
+    if(zoomIndex > 19) {
+      zoomIndex = 19;
+    } else if(zoomIndex < 1) {
+      zoomIndex = 1;
+    }
+    return (zooms[zoomIndex] * this.mapWidth) / 1609.34;
+  }
+
+
   ngOnDestroy() {
+
     this.sub.unsubscribe()
     this.map.remove()
   }

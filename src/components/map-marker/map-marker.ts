@@ -7,7 +7,8 @@ import { Subscription } from 'rxjs/Subscription';
 
   interface LocationHit {
     location: any [],
-    distance: number
+    distance: number,
+    key: string
   }
 
 @Component({
