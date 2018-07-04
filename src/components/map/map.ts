@@ -88,8 +88,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
           return { zoom: this.getRadius(data.zoom), center: data.target }
         }),
         distinctUntilChanged((x, y) => this.changeFn(x, y)),
-        throttleTime(500),
+        throttleTime(1000),
         tap(data => console.log(`the camera move data ${JSON.stringify(data)}`)),
+        // tap((data) => this.map.addCircleSync({center: data.center, radius: data.zoom * 1609.34 }) ),
         tap((data) => this.cameraChange.emit(data))
       )
   }
