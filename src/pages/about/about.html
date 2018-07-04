@@ -7,9 +7,12 @@
 </ion-header>
 
 <ion-content >
+
   <app-map (cameraChange)="onCameraChange($event)">
     <ng-container *ngIf="coords | async as locs">
-    <app-marker *ngFor="let loc of locs"  [position]="loc" ></app-marker>      
+    <app-marker (data)="onMarkerClick($event)" *ngFor="let loc of locs"  [position]="loc" ></app-marker>      
     </ng-container>
   </app-map>
+
+ 
 </ion-content>

@@ -53,7 +53,7 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
 
   private listenForClick() {
     return this.maps.onMarkerEvent(this.markerRef, GoogleMapsEvent.MARKER_CLICK)
-    .pipe(tap((e => this.data.next(e))));
+    .pipe(tap((e => this.data.next(this.position))));
   }
 
   
