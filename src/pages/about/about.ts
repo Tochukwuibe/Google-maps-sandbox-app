@@ -18,7 +18,6 @@ export class AboutPage {
   public coords: Observable<{ lat: number, lng: number }[]>;
 
   private onCoords = new Subject();
-  private initial = true;
   private sub: Subscription;
 
 
@@ -30,7 +29,6 @@ export class AboutPage {
   }
 
   ionViewWillEnter() {
-
     this.coords = this.geo.hits.asObservable();
 
     this.sub = this.onCoords.pipe(
@@ -38,17 +36,13 @@ export class AboutPage {
       switchMap((data: { zoom: number, center: { lat: number, lng: number } }) => this.geo.initQuery( Math.round(data.zoom), [data.center.lat, data.center.lng])),
       switchMap(() => this.geo.onQuery('key_entered')),
       // tap((data) => console.log(`the query result ${JSON.stringify(data)}`))
-    ).subscribe()
-
+    ).subscribe();
   }
 
 
 
   onCameraChange(event: { zoom: number, center: { lat: number, lng: number } }) {
-    
     this.onCoords.next(event);
-    this.initial = false;
-
   }
 
 
