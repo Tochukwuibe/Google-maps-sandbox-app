@@ -72,9 +72,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       zoom: 10,
       duration: 2000
     }
-    this.map.moveCamera(cameraOpts)
-    this.map.setMyLocationButtonEnabled(true)
-    this.map.setMyLocationEnabled(true)
+    this.map.moveCamera(cameraOpts);
+    this.map.setMyLocationButtonEnabled(true);
+    this.map.setMyLocationEnabled(true);
     this.mapWidth = this.canvas.nativeElement.scrollWidth;
 
   }
@@ -84,9 +84,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.maps.onMapEvent(GoogleMapsEvent.CAMERA_MOVE)
       .pipe(
         map((data) => data[0]),
-        map((data) => {
-          return { zoom: this.getRadius(data.zoom), center: data.target }
-        }),
+        map((data) => this.mapEvent(data)),
         distinctUntilChanged((x, y) => this.changeFn(x, y)),
         throttleTime(1000),
         tap(data => console.log(`the camera move data ${JSON.stringify(data)}`)),
@@ -96,6 +94,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+  private mapEvent(data: any): { zoom: number; center: any; } {
+    return { zoom: this.getRadius(data.zoom), center: data.target };
+  }
+
   private changeFn(x: { zoom: number; center: any; }, y: { zoom: number; center: any; }) {
     const point1 = [x.center.lat, x.center.lng];
     const point2 = [y.center.lat, y.center.lng];
@@ -103,14 +105,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('the change in distance', distance);
     return (distance < Math.floor(x.zoom / 2)) && (x.zoom === y.zoom);
   }
-
-  // private comparisonFn() {
-  //   return (x, y) =>{
-      
-  //     return x.zoom === y.zoom && (x.center.lat === y.center.lat && x.center.lng === y.center.lng) 
-  //   };
-  // }
-
 
 
   private getRadius(zoom: number) {
