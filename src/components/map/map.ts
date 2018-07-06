@@ -108,7 +108,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   private getRadius(zoom: number) {
-  
     const zooms = [21282, 16355, 10064, 5540, 2909, 1485, 752, 378, 190, 95, 48, 24, 12, 6, 3, 1.48, 0.74, 0.37, 0.19];
     let zoomIndex = Math.ceil(zoom) - 1;
 
