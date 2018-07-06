@@ -1,0 +1,32 @@
+
+
+<ion-grid>
+  <ion-row>
+    <ion-col col-9>
+        <ion-searchbar [(ngModel)]="address" ></ion-searchbar>
+    </ion-col>
+
+    <ion-col col-3>
+      <button ion-button (tap)="searchAddress()" >Search</button>
+      </ion-col>
+  </ion-row>
+</ion-grid>
+<div style="width: 100%; height: 70%">
+  <app-map>
+
+  </app-map>
+</div>
+
+<ion-grid>
+    <ion-row>
+      <ion-col >
+      </ion-col>
+  
+      <ion-col style="display: inline-block;" text-center>
+        <button ion-button full>Finish</button>
+        </ion-col>
+
+        <ion-col >
+          </ion-col>
+    </ion-row>
+  </ion-grid>

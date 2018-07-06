@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapOptions } from '@ionic-native/google-maps';
+import { GoogleMaps, GoogleMap, GoogleMapsEvent, Marker, GoogleMapOptions, Geocoder, CameraPosition, ILatLng } from '@ionic-native/google-maps';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { Observable } from 'rxjs/Observable'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -76,7 +76,6 @@ export class MapProvider {
 
   public onMapEvent(event: string) {
 
-
    const event$ = new Observable(observer => {
       const sub = this.mapRef.addEventListener(event)
       .subscribe((e) => {
@@ -94,6 +93,29 @@ export class MapProvider {
      filter(res => !!res),
      switchMap(() => event$)
    )
+  }
+
+  public searchAddress(addy: string ) {
+    console.log('searching for ', addy)
+   return fromPromise(Geocoder.geocode({address: addy}))
+   .pipe(
+     map((res) => res[0]),
+     map((hit) => hit.position)
+   )
+  }
+
+  public setCameraOptions(pos: { lat: number, lng: number }) {
+    const cameraOpts: CameraPosition<ILatLng> = {
+      target: pos,
+      zoom: 10,
+      duration: 2000
+    }
+   return this.mapRef.moveCamera(cameraOpts);  
+  }
+
+
+  public clearMap() {
+    this.mapRef.clear();
   }
 
 }
