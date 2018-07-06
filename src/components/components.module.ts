@@ -2,13 +2,16 @@ import { NgModule } from '@angular/core';
 import { MapComponent } from './map/map';
 import { MapMarkerComponent } from './map-marker/map-marker';
 import { IonicModule } from 'ionic-angular';
+import { AppVideoComponent } from './app-video/app-video';
 @NgModule({
 	declarations: [MapComponent,
-    MapMarkerComponent],
+    MapMarkerComponent,
+    AppVideoComponent],
 	imports: [
 		IonicModule
 	],
 	exports: [MapComponent,
-    MapMarkerComponent]
+    MapMarkerComponent,
+    AppVideoComponent]
 })
 export class ComponentsModule {}

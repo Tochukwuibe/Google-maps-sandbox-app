@@ -21,6 +21,7 @@ import {AngularFirestoreModule} from 'angularfire2/firestore';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import { MapProvider } from '../providers/map/map';
 import { ComponentsModule } from '../components/components.module';
+import { VideosProvider } from '../providers/videos/videos';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { ComponentsModule } from '../components/components.module';
     FirestoreProvider,
     GeoFireProvider,
     DbProvider,
-    MapProvider
+    MapProvider,
+    VideosProvider
   ]
 })
 export class AppModule {}
