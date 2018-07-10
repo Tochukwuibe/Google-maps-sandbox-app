@@ -28,7 +28,7 @@ export class AddyMapComponent implements OnInit, OnDestroy {
   public searchAddress() {
     this.maps.searchAddress(this.address)
     .pipe(
-      tap((addy) => console.log('the address ', JSON.stringify (addy) )),
+      tap((addy) => console.log('the address ', JSON.stringify (addy))),
       tap((pos) => this.maps.setCameraOptions(pos)),
       switchMap((pos) => this.addMarker(pos)),
       take(1)
