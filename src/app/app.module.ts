@@ -36,14 +36,7 @@ import { GeoFireXProvider } from '../providers/geo-fire-x/geo-fire-x';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     ComponentsModule,
-    AngularFireModule.initializeApp({
-      apiKey: "AIzaSyA798mO_IqbKHGY8xMtBpuuiADvM1dkvr4",
-      authDomain: "firestore-84244.firebaseapp.com",
-      databaseURL: "https://firestore-84244.firebaseio.com",
-      projectId: "firestore-84244",
-      storageBucket: "firestore-84244.appspot.com",
-      messagingSenderId: "455433881626"
-    }),
+    AngularFireModule.initializeApp({}),
     AngularFireDatabaseModule,
     AngularFirestoreModule
   ],
