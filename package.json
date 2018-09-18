@@ -53,8 +53,8 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-googlemaps": {
-        "API_KEY_FOR_ANDROID": "AIzaSyA798mO_IqbKHGY8xMtBpuuiADvM1dkvr4",
-        "API_KEY_FOR_IOS": "AIzaSyA798mO_IqbKHGY8xMtBpuuiADvM1dkvr4"
+        "API_KEY_FOR_ANDROID": "",
+        "API_KEY_FOR_IOS": ""
       },
       "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
