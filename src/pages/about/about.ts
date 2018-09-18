@@ -35,7 +35,6 @@ export class AboutPage {
       filter(res => !!res),
       switchMap((data: { zoom: number, center: { lat: number, lng: number } }) => this.geo.initQuery(Math.round(data.zoom), [data.center.lat, data.center.lng])),
       switchMap(() => this.geo.onQuery('key_entered')),
-      // tap((data) => console.log(`the query result ${JSON.stringify(data)}`))
     ).subscribe();
   }
 

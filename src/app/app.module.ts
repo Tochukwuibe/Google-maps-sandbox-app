@@ -22,6 +22,7 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import { MapProvider } from '../providers/map/map';
 import { ComponentsModule } from '../components/components.module';
 import { VideosProvider } from '../providers/videos/videos';
+import { GeoFireXProvider } from '../providers/geo-fire-x/geo-fire-x';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { VideosProvider } from '../providers/videos/videos';
     GeoFireProvider,
     DbProvider,
     MapProvider,
-    VideosProvider
+    VideosProvider,
+    GeoFireXProvider
   ]
 })
 export class AppModule {}
